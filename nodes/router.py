@@ -17,6 +17,7 @@ def router_node(state):
         next_pipeline = "skip"
 
     return {
+        "jobs": state["jobs"],
         "high_jobs": high,
         "medium_jobs": medium,
         "low_jobs": low,

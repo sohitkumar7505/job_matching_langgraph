@@ -1,3 +1,6 @@
+from models import ApplicationStrategy
+
+
 def strategy_node(state):
     """Generate final application strategy based on approved jobs."""
     
@@ -10,13 +13,19 @@ def strategy_node(state):
     # Generate recommendations
     recommended_order = [job["title"] for job in sorted_approved]
     
+    strategy_payload = {
+        "candidate_name": state["candidate"]["name"],
+        "total_jobs_analyzed": len(state["jobs"]),
+        "approved_jobs": approved_jobs,
+        "skipped_jobs": skipped_jobs,
+        "recommended_apply_order": recommended_order
+    }
+
+    validated_strategy = ApplicationStrategy(**strategy_payload)
+
     return {
         "final_output": {
-            "candidate_name": state["candidate"]["name"],
-            "total_jobs_analyzed": len(state["jobs"]),
-            "approved_jobs": approved_jobs,
-            "skipped_jobs": skipped_jobs,
-            "recommended_apply_order": recommended_order,
+            **validated_strategy.dict(),
             "stats": {
                 "approved_count": len(approved_jobs),
                 "skipped_count": len(skipped_jobs),

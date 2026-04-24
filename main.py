@@ -5,6 +5,7 @@ from state import GraphState
 
 from nodes.intake import intake_node
 from nodes.scorer import scorer_node
+from nodes.router import router_node
 from nodes.aggregate import aggregate_node
 from nodes.human_review import human_review_node
 from nodes.strategy import strategy_node
@@ -21,6 +22,7 @@ builder = StateGraph(GraphState)
 
 builder.add_node("intake", intake_node)
 builder.add_node("scorer", scorer_node)
+builder.add_node("router", router_node)
 
 builder.add_node("full_pipeline", full_pipeline)
 builder.add_node("quick_pipeline", quick_pipeline)
@@ -33,24 +35,16 @@ builder.add_node("strategy", strategy_node)
 builder.set_entry_point("intake")
 
 builder.add_edge("intake", "scorer")
+builder.add_edge("scorer", "router")
 
-# conditional routing from scorer to pipelines
-def route_by_category(state):
-    jobs = state["jobs"]
-    high = [j for j in jobs if j["category"] == "HIGH"]
-    medium = [j for j in jobs if j["category"] == "MEDIUM"]
-    low = [j for j in jobs if j["category"] == "LOW"]
-    
-    if high:
-        return "full_pipeline"
-    elif medium:
-        return "quick_pipeline"
-    else:
-        return "skip"
+# conditional routing from router to pipelines
+
+def route_router(state):
+    return state.get("next_pipeline", "skip")
 
 builder.add_conditional_edges(
-    "scorer",
-    route_by_category,
+    "router",
+    route_router,
     {
         "full_pipeline": "full_pipeline",
         "quick_pipeline": "quick_pipeline",
