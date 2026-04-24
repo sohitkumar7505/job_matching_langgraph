@@ -1,0 +1,77 @@
+[
+  {
+    "job_id": "1",
+    "title": "AI Agent Developer @ TechCorp",
+    "location": "Remote",
+    "description": "Build AI agents using Python, CrewAI, LangGraph, and LLM APIs. Work with Pydantic and automation tools.",
+    "required_skills": [
+      "Python",
+      "CrewAI",
+      "LangGraph",
+      "LLM APIs",
+      "Pydantic"
+    ],
+    "preferred_skills": [
+      "n8n",
+      "Playwright",
+      "Next.js"
+    ],
+    "experience_required": 2
+  },
+  {
+    "job_id": "2",
+    "title": "Senior Data Scientist @ DataFlow",
+    "location": "Bangalore",
+    "description": "Work on ML models using TensorFlow, PyTorch, Spark, and MLOps pipelines. Requires strong research background.",
+    "required_skills": [
+      "Python",
+      "TensorFlow",
+      "PyTorch",
+      "Spark",
+      "MLOps"
+    ],
+    "preferred_skills": [
+      "PhD",
+      "Research Publications"
+    ],
+    "experience_required": 5
+  },
+  {
+    "job_id": "3",
+    "title": "Full Stack Developer @ StartupABC",
+    "location": "Hyderabad",
+    "description": "Develop web applications using React, Node.js, PostgreSQL, Docker, and AWS. Agile environment.",
+    "required_skills": [
+      "React",
+      "Node.js",
+      "PostgreSQL",
+      "Docker",
+      "AWS"
+    ],
+    "preferred_skills": [
+      "Python",
+      "CI/CD",
+      "Agile"
+    ],
+    "experience_required": 2
+  },
+  {
+    "job_id": "4",
+    "title": "AI Platform Engineer @ CloudAI",
+    "location": "Remote",
+    "description": "Build scalable AI platforms using Python, FastAPI, LangChain, Docker, and Kubernetes.",
+    "required_skills": [
+      "Python",
+      "FastAPI",
+      "LangChain",
+      "Docker",
+      "Kubernetes"
+    ],
+    "preferred_skills": [
+      "CrewAI",
+      "Vector Databases",
+      "Monitoring"
+    ],
+    "experience_required": 3
+  }
+]

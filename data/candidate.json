@@ -1,0 +1,20 @@
+{
+  "name": "Ravi Kumar",
+  "title": "Python Developer",
+  "experience_years": 3,
+  "skills": [
+    "Python",
+    "FastAPI",
+    "PostgreSQL",
+    "Docker",
+    "React",
+    "LangChain",
+    "CrewAI",
+    "Git"
+  ],
+  "preferences": {
+    "role_type": "AI/ML Engineer",
+    "location": "Remote or Hyderabad",
+    "min_match_score": 5
+  }
+}
