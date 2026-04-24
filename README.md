@@ -8,6 +8,46 @@ It takes a **candidate profile** and multiple **job listings**, evaluates their 
 
 ---
 
+## 🛠️ Setup
+
+1. **Install dependencies:**
+   ```bash
+   pip install groq langgraph pydantic python-dotenv langchain-groq langchain-core
+   ```
+
+2. **Set up environment variables:**
+   - Create a `.env` file in the root directory
+   - Add your Groq API key:
+     ```
+     GROQ_API_KEY=your_groq_api_key_here
+     ```
+
+3. **Run the system:**
+   ```bash
+   python main.py
+   ```
+
+---
+
+## 🎮 Interactive Human Review
+
+When you run the system, it will:
+
+1. **Analyze Jobs** - Score each job 1-10 based on candidate fit
+2. **Route Processing** - Send jobs through pipelines:
+   - HIGH (8-10) → Full analysis + tailored resume + cover letter
+   - MEDIUM (5-7) → Quick summary + skill matching
+   - LOW (1-4) → Skipped
+3. **Pause for Review** - Display processed jobs with full details
+4. **Get Your Decision** - Choose from:
+   - `approve` - Approve all jobs
+   - `approve 1,2,3` - Approve specific jobs
+   - `reject` - Reject all
+   - `review 1` - View detailed info for a job
+   - `revise 1,2` - Mark jobs for revision
+5. **Generate Strategy** - Show final recommendations with stats
+6. **Streamed LLM Text Output** - View cover letters, summaries, and analysis as they generate in real time
+
 ## 🎯 Key Features
 
 * ✅ **Multi-job processing** (3–5 jobs at once)

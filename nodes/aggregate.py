@@ -1,7 +1,15 @@
 def aggregate_node(state):
-    processed = state["high_jobs"] + state["medium_jobs"]
+    jobs = state["jobs"]
+    processed = []
+    skipped = []
+    
+    for job in jobs:
+        if job["category"] in ["HIGH", "MEDIUM"]:
+            processed.append(job)
+        else:
+            skipped.append(job)
 
     return {
         "processed_jobs": processed,
-        "skipped_jobs": state["low_jobs"]
+        "skipped_jobs": skipped
     }

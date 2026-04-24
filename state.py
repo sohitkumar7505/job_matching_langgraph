@@ -12,6 +12,9 @@ class JobState(TypedDict):
     quality_score: Optional[int]
     retries: int
     status: Optional[str]
+    analysis: Optional[str]
+    requirements: Optional[str]
+    matches: Optional[str]
 
 class GraphState(TypedDict):
     candidate: dict
@@ -25,3 +28,4 @@ class GraphState(TypedDict):
     skipped_jobs: List[JobState]
     approved_jobs: List[JobState]
     final_output: Optional[dict]
+    human_decision: Optional[str]
