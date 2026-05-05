@@ -1,54 +1,83 @@
-from models import JobScore
-from utility import get_llm_response
+import json
+from utility import get_llm_response, get_system_prompt
+from guardrails.input_guardrails import validate_input, InputValidationError
+from guardrails.output_guardrails import validate_output, OutputValidationError
 
-def score_single_job(job, candidate):
-    prompt = f"""
-You are an expert HR recruiter. Score this job for the candidate on a scale of 1-10.
 
+def build_scoring_prompt(job, candidate, version="1.1"):
+    prompt_system = get_system_prompt(version)
+    prompt_user = f"""
 Candidate Profile:
 - Name: {candidate['name']}
 - Title: {candidate['title']}
 - Experience: {candidate['experience_years']} years
 - Skills: {', '.join(candidate['skills'])}
-- Preferences: Role: {candidate['preferences']['role_type']}, Location: {candidate['preferences']['location']}
+- Preferences: Role: {candidate.get('preferences', {}).get('role_type', 'N/A')}, Location: {candidate.get('preferences', {}).get('location', 'N/A')}
 
 Job Details:
+- Job ID: {job.get('job_id', 'unknown')}
 - Title: {job['title']}
-- Location: {job['location']}
-- Description: {job['description']}
-- Required Skills: {', '.join(job['required_skills'])}
+- Location: {job.get('location', 'N/A')}
+- Description: {job.get('description', '')}
+- Required Skills: {', '.join(job.get('required_skills', []))}
 - Preferred Skills: {', '.join(job.get('preferred_skills', []))}
-- Experience Required: {job['experience_required']} years
+- Experience Required: {job.get('experience_required', 'N/A')} years
 
-Provide a JSON response with:
-- score: integer 1-10
-- category: "HIGH" (8-10), "MEDIUM" (5-7), "LOW" (1-4)
-- reason: brief explanation
-
-Response format: {{"score": 8, "category": "HIGH", "reason": "Strong match in skills and experience"}}
+Please evaluate the candidate-job fit and return the required JSON object only.
 """
+    return prompt_system + "\n\n" + prompt_user
 
-    result = get_llm_response(prompt)
-    # Parse JSON
-    import json
+
+def score_single_job(job, candidate):
+    print(f"\n🎯 SCORING JOB: {job['title']}")
+    print(f"   Location: {job.get('location', 'N/A')}")
+    print("   Validating input and checking for prompt injection...")
+
     try:
-        score_data = json.loads(result)
-        job_score = JobScore(**score_data)
-    except:
-        # Fallback
-        job_score = JobScore(score=5, category="MEDIUM", reason="LLM parsing failed")
+        validate_input(candidate, job)
+    except InputValidationError as e:
+        print(f"   ⚠️  Input guardrail blocked scoring: {e}")
+        job['score'] = 1
+        job['category'] = 'LOW'
+        job['score_reason'] = 'Input validation failed or prompt injection detected.'
+        return job
 
-    job["score"] = job_score.score
-    job["category"] = job_score.category
+    prompt = build_scoring_prompt(job, candidate, version="1.1")
+    print("   Sending scoring prompt to LLM...")
+
+    try:
+        raw_response = get_llm_response(prompt)
+        validated = validate_output(raw_response)
+        job['score'] = validated.score
+        job['category'] = validated.category
+        job['score_reason'] = validated.reason
+        print(f"   ✅ Score: {validated.score}/10 | Category: {validated.category}")
+        print(f"   💡 Reason: {validated.reason}")
+    except OutputValidationError as e:
+        print(f"   ⚠️  Output guardrail failed: {e}")
+        job['score'] = 1
+        job['category'] = 'LOW'
+        job['score_reason'] = 'LLM output failed validation.'
+    except Exception as e:
+        print(f"   ⚠️  Scoring failed: {e}")
+        job['score'] = 1
+        job['category'] = 'LOW'
+        job['score_reason'] = 'LLM scoring failed due to an unexpected error.'
 
     return job
 
 
 def scorer_node(state):
-    jobs = state["jobs"]
-    candidate = state["candidate"]
+    jobs = state['jobs']
+    candidate = state['candidate']
 
-    # simulate parallel fan-out
-    updated_jobs = [score_single_job(job, candidate) for job in jobs]
+    print(f"\n📊 SCORING {len(jobs)} JOBS FOR CANDIDATE: {candidate['name']}")
+    print("="*80)
 
-    return {"jobs": updated_jobs}
+    updated_jobs = []
+    for i, job in enumerate(jobs, 1):
+        print(f"\n[Job {i}/{len(jobs)}]")
+        scored_job = score_single_job(job, candidate)
+        updated_jobs.append(scored_job)
+
+    return {'jobs': updated_jobs}

@@ -5,58 +5,46 @@ from state import GraphState
 
 from nodes.intake import intake_node
 from nodes.scorer import scorer_node
-from nodes.router import router_node
-from nodes.aggregate import aggregate_node
+from nodes.sequential_processor import process_single_job_node
 from nodes.human_review import human_review_node
 from nodes.strategy import strategy_node
-from nodes.skip_logs import skip_node
-
-from subgraphs.full_pipeline import build_full_pipeline
-from subgraphs.quick_pipeline import build_quick_pipeline
-
-# subgraphs
-full_pipeline = build_full_pipeline()
-quick_pipeline = build_quick_pipeline()
 
 builder = StateGraph(GraphState)
 
 builder.add_node("intake", intake_node)
 builder.add_node("scorer", scorer_node)
-builder.add_node("router", router_node)
-
-builder.add_node("full_pipeline", full_pipeline)
-builder.add_node("quick_pipeline", quick_pipeline)
-builder.add_node("skip", skip_node)
-
-builder.add_node("aggregate", aggregate_node)
+builder.add_node("process_jobs", process_single_job_node)
 builder.add_node("human_review", human_review_node)
 builder.add_node("strategy", strategy_node)
 
 builder.set_entry_point("intake")
 
 builder.add_edge("intake", "scorer")
-builder.add_edge("scorer", "router")
+builder.add_edge("scorer", "process_jobs")
 
-# conditional routing from router to pipelines
+# Check if more jobs need processing
+def check_more_jobs(state):
+    jobs = state.get("jobs", [])
+    processed_jobs = state.get("processed_jobs", [])
+    skipped_jobs = state.get("skipped_jobs", [])
 
-def route_router(state):
-    return state.get("next_pipeline", "skip")
+    processed_count = len(processed_jobs) + len(skipped_jobs)
+    total_jobs = len(jobs)
+
+    if processed_count < total_jobs:
+        return "process_jobs"  # Continue processing
+    else:
+        return "human_review"  # All jobs done, go to review
 
 builder.add_conditional_edges(
-    "router",
-    route_router,
+    "process_jobs",
+    check_more_jobs,
     {
-        "full_pipeline": "full_pipeline",
-        "quick_pipeline": "quick_pipeline",
-        "skip": "skip"
+        "process_jobs": "process_jobs",
+        "human_review": "human_review"
     }
 )
 
-builder.add_edge("full_pipeline", "aggregate")
-builder.add_edge("quick_pipeline", "aggregate")
-builder.add_edge("skip", "aggregate")
-
-builder.add_edge("aggregate", "human_review")
 builder.add_edge("human_review", "strategy")
 
 # persistence
