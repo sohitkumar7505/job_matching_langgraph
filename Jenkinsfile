@@ -41,7 +41,7 @@ pipeline {
             steps {
                 sh '''
                 . .venv/bin/activate
-                bandit -r .
+                bandit -r . -x .venv
                 '''
             }
         }
