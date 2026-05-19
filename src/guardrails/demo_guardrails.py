@@ -11,17 +11,21 @@ Shows 3 scenarios where guardrails catch and block bad inputs/outputs:
 ==============================================================
 """
 
-import sys
-import os
-import json
+    import json
+    import os
+    import sys
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    sys.path.insert(
+        0, os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    )
 
-from guardrails.input_guardrails import validate_input, InputValidationError
-from guardrails.output_guardrails import validate_output, OutputValidationError
-from guardrails.action_guardrails import TokenCostLimiter, CostLimitExceededError
-
-# ── Color helpers ───────────────────────────────────────────
+    from guardrails.action_guardrails import CostLimitExceededError, TokenCostLimiter
+    from guardrails.input_guardrails import InputValidationError, validate_input
+    from guardrails.output_guardrails import (
+        OutputValidationError,
+        ScoredJobOutput,
+        validate_output,
+    )
 GREEN  = "\033[92m"
 RED    = "\033[91m"
 YELLOW = "\033[93m"

@@ -15,10 +15,9 @@ Guardrail 4 — Output Format Validator (Pydantic)
 ==============================================================
 """
 
-import re
 import json
+import re
 from enum import Enum
-from typing import Optional
 
 from pydantic import BaseModel, field_validator, model_validator
 

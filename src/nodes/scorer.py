@@ -1,7 +1,6 @@
-import json
+from guardrails.input_guardrails import InputValidationError, validate_input
+from guardrails.output_guardrails import OutputValidationError, validate_output
 from utility import get_llm_response, get_system_prompt
-from guardrails.input_guardrails import validate_input, InputValidationError
-from guardrails.output_guardrails import validate_output, OutputValidationError
 
 
 def build_scoring_prompt(job, candidate, version="1.1"):

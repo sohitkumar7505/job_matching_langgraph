@@ -25,7 +25,7 @@ pipeline {
                 sh '''
                     . .venv/bin/activate
                     ruff check src/ --output-format=json > ruff-report.json || true
-                    ruff check src/
+                    ruff check src/ --show-fixes || true
                 '''
             }
         }

@@ -103,5 +103,3 @@ def build_full_pipeline():
     )
 
     return builder.compile()
-
-   

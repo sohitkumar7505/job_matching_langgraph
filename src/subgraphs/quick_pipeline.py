@@ -1,5 +1,6 @@
 from langgraph.graph import StateGraph
-from utility import get_llm_response, stream_llm_response
+
+from utility import stream_llm_response
 
 def extract_reqs(state):
     jobs = state.get("jobs", [])
