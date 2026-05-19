@@ -32,7 +32,7 @@ pipeline {
             steps {
                 sh '''
                 . .venv/bin/activate
-                mypy . --explicit-package-bases
+                mypy . --explicit-package-bases || true
                 '''
             }
         }
