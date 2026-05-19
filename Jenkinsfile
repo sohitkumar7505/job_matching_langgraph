@@ -23,7 +23,7 @@ pipeline {
             steps {
                 sh '''
                 . .venv/bin/activate
-                ruff check .
+                ruff check . --fix
                 '''
             }
         }
