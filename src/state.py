@@ -1,5 +1,6 @@
 from typing import List, Optional, TypedDict
 
+
 class JobState(TypedDict):
     job_id: str
     title: str

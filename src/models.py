@@ -2,6 +2,7 @@ from typing import List
 
 from pydantic import BaseModel
 
+
 class JobScore(BaseModel):
     score: int
     category: str

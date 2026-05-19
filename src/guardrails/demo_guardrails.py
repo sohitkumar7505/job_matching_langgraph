@@ -10,22 +10,21 @@ Shows 3 scenarios where guardrails catch and block bad inputs/outputs:
   4. Token budget exceeded → blocked by action guardrail
 ==============================================================
 """
+import json
+import os
+import sys
 
-    import json
-    import os
-    import sys
+sys.path.insert(
+    0, os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+)
 
-    sys.path.insert(
-        0, os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    )
-
-    from guardrails.action_guardrails import CostLimitExceededError, TokenCostLimiter
-    from guardrails.input_guardrails import InputValidationError, validate_input
-    from guardrails.output_guardrails import (
-        OutputValidationError,
-        ScoredJobOutput,
-        validate_output,
-    )
+from guardrails.action_guardrails import CostLimitExceededError, TokenCostLimiter
+from guardrails.input_guardrails import InputValidationError, validate_input
+from guardrails.output_guardrails import (
+    OutputValidationError,
+    ScoredJobOutput,
+    validate_output,
+)
 GREEN  = "\033[92m"
 RED    = "\033[91m"
 YELLOW = "\033[93m"

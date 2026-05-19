@@ -1,3 +1,6 @@
+import json
+
+
 def intake_node(state):
     with open("data/candidate.json") as f:
         candidate = json.load(f)

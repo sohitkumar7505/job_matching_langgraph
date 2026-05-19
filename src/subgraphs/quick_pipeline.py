@@ -2,6 +2,7 @@ from langgraph.graph import StateGraph
 
 from utility import stream_llm_response
 
+
 def extract_reqs(state):
     jobs = state.get("jobs", [])
     for job in jobs:
