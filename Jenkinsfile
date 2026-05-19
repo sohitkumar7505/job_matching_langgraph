@@ -23,7 +23,7 @@ pipeline {
             steps {
                 sh '''
                 . .venv/bin/activate
-                ruff check src/
+                ruff check .
                 '''
             }
         }
@@ -32,7 +32,7 @@ pipeline {
             steps {
                 sh '''
                 . .venv/bin/activate
-                mypy src/
+                mypy .
                 '''
             }
         }
@@ -41,7 +41,7 @@ pipeline {
             steps {
                 sh '''
                 . .venv/bin/activate
-                bandit -r src/
+                bandit -r .
                 '''
             }
         }
@@ -50,7 +50,7 @@ pipeline {
             steps {
                 sh '''
                 . .venv/bin/activate
-                pytest tests/ --cov=src --cov-report=xml
+                pytest --cov=src --cov-report=xml
                 '''
             }
         }
